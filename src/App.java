@@ -163,11 +163,13 @@ public class App {
     }
     
     static void fazerBuscaSequencial() {
-        // TODO
+        IBuscador<Produto> buscaSequencial = new BuscaSequencial<>(produtosCadastrados);
+        buscar(buscaSequencial);
     }
 
     static void fazerBuscaBinaria() {
-        // TODO
+        IBuscador<Produto> buscaBinaria = new BuscaBinaria<>(produtosCadastrados);
+        buscar(buscaBinaria);
     }
 
     public static void main(String[] args) {
