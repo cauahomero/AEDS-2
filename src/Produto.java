@@ -83,16 +83,27 @@ public abstract class Produto implements Comparable<Produto>{
     }
 
     /**
-     * Igualdade de produtos: caso possuam o mesmo código. 
+     * Igualdade de produtos: caso possuam a mesma descrição. 
      * @param obj Outro produto a ser comparado 
-     * @return booleano true/false conforme o parâmetro possua o mesmo código identificador deste objeto
+     * @return booleano true/false conforme o parâmetro possua a mesma descrição deste objeto
      */
     @Override
     public boolean equals(Object obj){
-        try{
+        try {
             Produto outro = (Produto)obj;
+
+            return this.descricao.equals(outro.descricao);
+        } catch (ClassCastException ex){
+            return false;
+        }
+    }
+
+    public boolean equalsHashCode(Object obj){
+        try {
+            Produto outro = (Produto)obj;
+
             return this.hashCode() == outro.hashCode();
-        }catch (ClassCastException ex){
+        } catch (ClassCastException ex){
             return false;
         }
     }
