@@ -20,7 +20,7 @@ public class App {
     /** Quantidade de produtos cadastrados atualmente no vetor */
     static int quantosProdutos = 0;
 
-    static Bubblesort<Produto> ordenador;
+    static IOrdenador<Produto> ordenador;
 
     static void limparTela() {
         System.out.print("\033[H\033[2J");
@@ -135,11 +135,29 @@ public class App {
         
         System.out.println(mensagem);
     }
+    static int exibirMenuOrdenadores() {
+        cabecalho();
+
+        System.out.println("1- Boia");
+        System.out.println("2- Mergesort");
+
+        return lerOpcao("Escolha o método de ordenação a ser utilizado: " , Integer.class);
+    }
     
     static void ordenarProdutos(){
     	
+        int opcao;
+
         cabecalho();
         
+        opcao = exibirMenuOrdenadores();
+
+        switch (opcao) {
+            case 1 -> ordenador = new Bubblesort<>();
+            case 2 -> ordenador = new Mergesort<>();
+            case 3 -> ordenador = new Inserção<>();
+            case 4 -> ordenador = new Seleção<>();
+        }
         ordenador = new Bubblesort<>();
 
         produtosCadastrados = ordenador.ordenar(produtosCadastrados);        
