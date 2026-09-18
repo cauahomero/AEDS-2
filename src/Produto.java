@@ -26,7 +26,6 @@ public abstract class Produto implements Comparable<Produto>{
 			this.precoCusto = precoCusto;
 			this.margemLucro = margemLucro;
 			idProduto = ultimoID++;
-
 		} else {
 			throw new IllegalArgumentException("Valores inválidos para os dados do produto.");
 		}
@@ -70,7 +69,7 @@ public abstract class Produto implements Comparable<Produto>{
     	
     	NumberFormat moeda = NumberFormat.getCurrencyInstance();
     	
-		return String.format("IDENTIFICADOR: " + idProduto + " NOME: " + descricao + ": " + moeda.format(valorDeVenda()));
+		return String.format("NOME: " + descricao + ": " + moeda.format(valorDeVenda()));
 	}
     
     @Override
@@ -83,33 +82,40 @@ public abstract class Produto implements Comparable<Produto>{
     }
 
     /**
-     * Igualdade de produtos: caso possuam a mesma descrição. 
+     * Igualdade de produtos: caso possuam o mesmo código. 
      * @param obj Outro produto a ser comparado 
-     * @return booleano true/false conforme o parâmetro possua a mesma descrição deste objeto
+     * @return booleano true/false conforme o parâmetro possua o mesmo código identificador deste objeto
      */
     @Override
     public boolean equals(Object obj){
-        try {
-            Produto outro = (Produto)obj;
-
-            return this.descricao.equals(outro.descricao);
-        } catch (ClassCastException ex){
-            return false;
-        }
-    }
-
-    public boolean equalsHashCode(Object obj){
-        try {
-            Produto outro = (Produto)obj;
-
-            return this.hashCode() == outro.hashCode();
-        } catch (ClassCastException ex){
-            return false;
-        }
+    	
+        if (this == obj) {
+    		return true;
+    	}
+    	if ((obj == null) || (getClass() != obj.getClass())) {
+    		return false;
+    	}
+    	Produto outroProduto = (Produto) obj;
+    	return (this.hashCode() == outroProduto.hashCode());
     }
     
+    @Override
+    /**
+     * Comparação padrão do produto: identificador/hash code.
+     * Retorna um valor negativo se este produto tem um identificador anterior ao outro produto,
+     * valor positivo se o identificador é posterior ao do outro produto. Para o mesmo produto, o
+     * retorno é 0.
+     * @param outro Produto a ser comparado
+     * @return Int de acordo com a regra padrão de Comparable (descrita acima)
+     */
     public int compareTo(Produto outro){
-    	return this.descricao.compareTo(outro.descricao);
+    	
+    	if (this.idProduto == outro.idProduto)
+    		return 0;
+    	else if (this.idProduto < outro.idProduto)
+    		return -1;
+    	else
+    		return 1;
     }
     
     /**

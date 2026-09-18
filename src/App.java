@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 public class App {
 
 	/** Nome do arquivo de dados. O arquivo deve estar localizado na raiz do projeto */
-    static String nomeArquivoDados = "produtos.txt";
+    static String nomeArquivoDados;
     
     /** Scanner para leitura de dados do teclado */
     static Scanner teclado;
@@ -20,7 +20,7 @@ public class App {
     /** Quantidade de produtos cadastrados atualmente no vetor */
     static int quantosProdutos = 0;
 
-    static IOrdenator<Produto> ordenador;
+    static Bubblesort<Produto> ordenador;
 
     static void limparTela() {
         System.out.print("\033[H\033[2J");
@@ -38,7 +38,7 @@ public class App {
         System.out.println("AEDs II COMÉRCIO DE COISINHAS");
         System.out.println("=============================");
     }
-   
+    
     static <T extends Number> T lerOpcao(String mensagem, Class<T> classe) {
         
     	T valor;
@@ -54,26 +54,27 @@ public class App {
     }
     
     /** Imprime o menu principal, lê a opção do usuário e a retorna (int).
+     * Perceba que poderia haver uma melhor modularização com a criação de uma classe Menu.
      * @return Um inteiro com a opção do usuário.
     */
     static int menu() {
         cabecalho();
-        System.out.println("1 - Ordenar produtos");
-        System.out.println("2 - Embaralhar produtos");
-        System.out.println("3 - Busca sequencial por produto");
-        System.out.println("4 - Busca binária por produto");
-        System.out.println("5 - Listar todos os produtos");
+        System.out.println("1 - Procurar por um produto");
+        System.out.println("2 - Ordenar produtos");
+        System.out.println("3 - Embaralhar produtos");
+        System.out.println("4 - Listar todos os produtos");
         System.out.println("0 - Finalizar");
+        
         return lerOpcao("Digite sua opção: ", Integer.class);
     }
     
     /**
-     * Lê os dados de um arquivo-texto e retorna uma lista de produtos. Arquivo-texto no formato
+     * Lê os dados de um arquivo-texto e retorna um vetor de produtos. Arquivo-texto no formato
      * N  (quantidade de produtos) <br/>
      * tipo;descrição;preçoDeCusto;margemDeLucro;[dataDeValidade] <br/>
-     * Deve haver uma linha para cada um dos produtos. Retorna uma lista vazia em caso de problemas com o arquivo.
+     * Deve haver uma linha para cada um dos produtos. Retorna um vetor vazio em caso de problemas com o arquivo.
      * @param nomeArquivoDados Nome do arquivo de dados a ser aberto.
-     * @return Uma lista com os produtos carregados, ou vazia em caso de problemas de leitura.
+     * @return Um vetor com os produtos carregados, ou vazio em caso de problemas de leitura.
      */
     static Produto[] lerProdutos(String nomeArquivoDados) {
     	
@@ -105,42 +106,44 @@ public class App {
     	return produtosCadastrados;
     }
     
-    /** Localiza um produto no vetor de produtos cadastrados, a partir do nome de produto informado pelo usuário, e o retorna. 
-     *  A busca não é sensível ao caso. Em caso de não encontrar o produto, retorna null */
-    static Produto localizarProduto(IBuscador<Produto> buscador) {
-        cabecalho();
-        System.out.println("Localizando um produto...");
-        System.out.print("Digite a descrição do produto: ");
-        String desc = teclado.nextLine();
-        Produto busca = new ProdutoNaoPerecivel(desc, 0.1);
-        Produto encontrado = buscador.buscar(busca);
+    static Produto localizarProduto() {
         
-        return encontrado;
+    	Produto produto = null;
+    	Boolean localizado = false;
+    	
+    	cabecalho();
+    	System.out.println("Localizando um produto...");
+        int idProduto = lerOpcao("Digite o identificador do produto desejado: ", Integer.class);
+        for (int i = 0; (i < quantosProdutos && !localizado); i++) {
+    		if (produtosCadastrados[i].hashCode() == idProduto) {
+        		produto = produtosCadastrados[i];
+        		localizado = true;
+        	}
+        }
+        
+        return produto;   
     }
-
-    private static void mostrarProduto(Produto produto, IBuscador<Produto> buscador) {
+    
+    private static void mostrarProduto(Produto produto) {
     	
         cabecalho();
-        StringBuilder  mensagem = new StringBuilder("Produto não encontrado.\n");
+        String mensagem = "Dados inválidos para o produto!";
         
-        if (produto != null) {
-            mensagem = new StringBuilder(String.format("%s\n", produto));            
+        if (produto != null){
+            mensagem = String.format("Dados do produto:\n%s", produto);
         }
-
-        mensagem.append(String.format("\nTotal de comparações: %d\n", buscador.getComparacoes()));
-        mensagem.append(String.format("Tempo gasto: %,.0f nanossegundos\n", buscador.getTempo()));
         
-        System.out.println(mensagem.toString());
+        System.out.println(mensagem);
     }
     
     static void ordenarProdutos(){
     	
-    	cabecalho();
+        cabecalho();
         
-        ordenador = new Quicksort<>();
-        produtosCadastrados = ordenador.ordenar(produtosCadastrados, Produto::compareTo);
+        ordenador = new Bubblesort<>();
 
-        ordenador = null;
+        produtosCadastrados = ordenador.ordenar(produtosCadastrados);        
+        System.out.println("Tempo gasto com a ordenação dos produtos: " + ordenador.getTempoOrdenacao() + " ms.");
     }
 
     static void embaralharProdutos(){
@@ -151,48 +154,30 @@ public class App {
     static void listarTodosOsProdutos() {
     	
         cabecalho();
-        System.out.println("\nPRODUTOS CADASTRADOS:");
+        System.out.println("\nProdutos cadastrados: ");
         for (int i = 0; i < quantosProdutos; i++) {
         	System.out.println(String.format("%02d - %s", (i + 1), produtosCadastrados[i].toString()));
         }
     }
     
-    static void buscar(IBuscador<Produto> buscador) {
-    	Produto prod = localizarProduto(buscador);
-        mostrarProduto(prod, buscador);
-    }
-    
-    static void fazerBuscaSequencial() {
-        IBuscador<Produto> buscaSequencial = new BuscaSequencial<>(produtosCadastrados);
-        buscar(buscaSequencial);
-    }
-
-    static void fazerBuscaBinaria() {
-        IBuscador<Produto> buscaBinaria = new BuscaBinaria<>(produtosCadastrados);
-        buscar(buscaBinaria);
-    }
-
     public static void main(String[] args) {
 		teclado = new Scanner(System.in, Charset.forName("UTF-8"));
         nomeArquivoDados = "produtos.txt";
         produtosCadastrados = lerProdutos(nomeArquivoDados);
-
-        embaralharProdutos();
-
+        
         int opcao = -1;
       
         do{
-            opcao = menu();
+        	opcao = menu();
             switch (opcao) {
-            	case 1 -> ordenarProdutos();
-            	case 2 -> embaralharProdutos();
-            	case 3 -> fazerBuscaSequencial();
-            	case 4 -> fazerBuscaBinaria();
-            	case 5 -> listarTodosOsProdutos();
-            	case 0 -> System.out.println("FLW VLW OBG VLT SMP.");
+                case 1 -> mostrarProduto(localizarProduto());
+                case 2 -> ordenarProdutos();
+                case 3 -> embaralharProdutos();
+                case 4 -> listarTodosOsProdutos();
+                case 0 -> System.out.println("FLW VLW OBG VLT SMP.");
             }
             pausa();
-        }while(opcao != 0);       
+        } while (opcao != 0);       
 
         teclado.close();    
     }
