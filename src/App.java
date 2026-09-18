@@ -158,7 +158,6 @@ public class App {
             case 3 -> ordenador = new Inserção<>();
             case 4 -> ordenador = new Seleção<>();
         }
-        ordenador = new Bubblesort<>();
 
         produtosCadastrados = ordenador.ordenar(produtosCadastrados);        
         System.out.println("Tempo gasto com a ordenação dos produtos: " + ordenador.getTempoOrdenacao() + " ms.");
