@@ -140,8 +140,20 @@ public class App {
 
         System.out.println("1- Boia");
         System.out.println("2- Mergesort");
+        System.out.println("3- Inserção");
+        System.out.println("4- Seleção");
+        System.out.println("5- Quicksort");
 
         return lerOpcao("Escolha o método de ordenação a ser utilizado: " , Integer.class);
+    }
+
+    static int exibirMenuComparadores() {
+        cabecalho();
+
+        System.out.println("1- Por ID");
+        System.out.println("2- Por descrição");
+
+        return lerOpcao("Escolha o tipo de comparador a ser utilizado: " , Integer.class);
     }
     
     static void ordenarProdutos(){
@@ -158,6 +170,16 @@ public class App {
             case 3 -> ordenador = new Inserção<>();
             case 4 -> ordenador = new Seleção<>();
         }
+
+    opcao = exibirMenuComparadores();
+    switch (opcao) {
+        case 2:
+          //  ordenador.setComparador((a, b) ->(a.descricao().toLowerCase().compareTo(b.descricao())));
+          ordenador.setComparador(new ComparadorPorDescricao());
+        default:
+            produtosCadastrados = ordenador.ordenar(produtosCadastrados);
+            System.out.println("Tempo gasto com a ordenação: " + ordenador.getTempo() + " ms.");
+    }
 
         produtosCadastrados = ordenador.ordenar(produtosCadastrados);        
         System.out.println("Tempo gasto com a ordenação dos produtos: " + ordenador.getTempoOrdenacao() + " ms.");
