@@ -1,0 +1,16 @@
+15
+202401;Ana Silva;8.5,9.0,8.0;0.95
+202402;Bruno Costa;5.0,6.0,4.0;0.70
+202403;Carla Souza;9.2,8.8,9.6;0.88
+202404;Diego Oliveira;6.8,7.2,6.5;0.82
+202405;Elena Rostova;10.0,10.0,10.0;1.00
+202406;Felipe Santos;4.5,5.0,4.0;0.65
+202407;Gabriela Lima;7.5,8.0,7.0;0.90
+202408;Heitor Pereira;3.0,4.0,2.0;0.50
+202409;Isabela Martins;8.8,9.0,8.5;0.93
+202410;João Pedro;6.0,6.5,5.5;0.78
+202411;Karen Alves;9.5,9.8,9.2;0.96
+202412;Lucas Ferreira;7.0,7.5,6.5;0.85
+202413;Mariana Rios;8.0,8.5,9.0;0.91
+202414;Nicolas Gomez;5.5,6.0,5.0;0.72
+202415;Patricia Abravanel;9.0,9.5,9.2;0.94
